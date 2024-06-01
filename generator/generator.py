@@ -2,17 +2,19 @@ from datetime import date, timedelta, datetime
 from faker import Faker
 from random import randint, choice
 from copy import deepcopy
-from unidecode import unidecode
 
 
 class DB_generator:
-    BOOKINGS_FILE = "./data_csv/bookings.csv"
+    BOOKINGS_FILE = "./data_csv/bookings_"
     faker = Faker()
 
     start_date = datetime(2020, 1, 1)
     end_date = datetime(2024, 5, 31)
 
     booking_prob = 10
+
+    def get_bookings_filename(self, N):
+        return self.BOOKINGS_FILE + str(N) + '.csv'
 
     def __init__(self, max_count=1000):
         print("Generator is ready\n")
@@ -24,7 +26,7 @@ class DB_generator:
         print("Generations successfull\n")
 
     def generate_bookings(self):
-        with open(self.BOOKINGS_FILE, "w") as file:
+        with open(self.get_bookings_filename(self.MAX_COUNT), "w") as file:
             file.write(self.gen_header_booking())
             for i in range(1, self.MAX_COUNT + 1):
                 start_date = self.gen_datetime()
@@ -63,7 +65,7 @@ class DB_generator:
 
 
 def main():
-    generator = DB_generator()
+    generator = DB_generator(50000)
     generator.generate_DB()
 
 
