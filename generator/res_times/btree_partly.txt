@@ -1,0 +1,27 @@
+1000  0.0017616600031033157
+('bookings_pkey', '6000 kB')
+('is_active_index_partly', '56 kB')
+
+
+
+5000  0.0017701199976727366
+('bookings_pkey', '6000 kB')
+('is_active_index_partly', '64 kB')
+
+
+
+10000  0.001991470018401742
+('bookings_pkey', '6000 kB')
+('is_active_index_partly', '80 kB')
+
+
+
+25000  0.0033762499922886493
+('bookings_pkey', '6000 kB')
+('is_active_index_partly', '104 kB')
+
+
+
+50000  0.005427259975112975
+('bookings_pkey', '6000 kB')
+('is_active_index_partly', '144 kB')

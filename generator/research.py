@@ -36,25 +36,43 @@ def insert_data(cur, N):
                 .decode('utf-8') for val in values)
     cur.execute(insert_query % values_str)
 
-##    for index, row in data.iterrows():
-##        cur.execute(insert_query,
-##            (row['start_date'], row['finish_date'],
-##             row['is_active'], row['parkingfid'], row['auto_ownerfid']))
-
 def prepeare_db(cur, N):
-    query = "DELETE FROM bookings;"
+    query = "TRUNCATE TABLE bookings RESTART IDENTITY;"
     cur.execute(query)
     insert_data(cur, N)
 
-def measure_query_time(cursor, query, repetitions=10, drop_caches=False):
+def get_idx_info(cur):
+    q = """
+        SELECT
+            indexname,
+            pg_size_pretty(pg_relation_size(indexrelid)) AS index_size
+        FROM
+        (
+            SELECT
+                indexrelid,
+                indexname
+            FROM
+                pg_index
+            JOIN
+                pg_class ON pg_class.oid = pg_index.indexrelid
+            JOIN
+                pg_namespace ON pg_namespace.oid = pg_class.relnamespace
+            JOIN
+                pg_indexes ON pg_indexes.indexname = pg_class.relname
+            WHERE
+                pg_indexes.tablename = 'bookings'
+        ) AS subquery;
+    """
+    cur.execute(q)
+    results = cur.fetchall()
+    for row in results:
+        print(row)
+
+def measure_query_time(cursor, query, repetitions=10):
     cursor.execute("PREPARE my_query AS " + query)
     times = []
 
     for _ in range(repetitions):
-        if drop_caches:
-            cursor.execute("DISCARD ALL;")
-            # Повторно подготавливаем запрос
-            cursor.execute("PREPARE my_query AS " + query)
         start_time = time.perf_counter()
         cursor.execute("EXECUTE my_query;")
         end_time = time.perf_counter()
@@ -71,15 +89,14 @@ data_volumes = [1000, 5000, 10000, 25000, 50000]
 
 conn, cur = get_conn()
 
+
 for volume in data_volumes:
     prepeare_db(cur, volume)
 
-    # Измерение времени выполнения с кэшированием
     average_time_cached, times_cached = measure_query_time(cur, query,
-                repetitions=10, drop_caches=False)
+                repetitions=100)
     print(f"{volume}  {average_time_cached}")
+    get_idx_info(cur)
+    print('\n\n')
 
-##    # Измерение времени выполнения без кэширования
-##    average_time_uncached, times_uncached = measure_query_time(cur, query,
-##                    repetitions=10, drop_caches=True)
-##    print(f"Average time (uncached); N={volume}: {average_time_uncached} secs")
+close_conn(conn, cur)
