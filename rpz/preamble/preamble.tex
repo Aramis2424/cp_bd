@@ -32,6 +32,14 @@
 
 % Гиперссылки \toc с кликабельностью
 \usepackage{hyperref}
+\hypersetup{
+    colorlinks=true, % false: ссылки в цветных прямоугольниках; true: цветные ссылки
+    linkcolor=black,  % цвет внутренних ссылок
+    filecolor=black, % цвет ссылок на файлы
+    urlcolor=black,   % цвет URL-ссылок
+    citecolor=black, % цвет ссылок на библиографию
+    linkbordercolor={0 0 0} % цвет прямоугольников вокруг ссылок (черный)
+}
 \usepackage{titlesec}
 %\usepackage{tocloft}
 \makeatletter
@@ -82,7 +90,7 @@
 
 % оформление раздела
 \titleformat{\subsection}[hang]
-{\normalfont\fontsize{18}{10}\bfseries}{\thesubsection}{0.5em}{} % расстояние между № и названием
+{\normalfont\fontsize{18}{10}\bfseries\centering}{\thesubsection}{0.5em}{} % расстояние между № и названием
 \titlespacing\subsection{\parindent}{\parskip}{1.5ex}  % 21 = 14 * 1.5 т.е. полуторный интервал
 \renewcommand{\thesubsection}{\arabic{subsection}}
 % раздел
