@@ -1,3 +1,14 @@
+DROP TABLE bookings ;
+CREATE TABLE IF NOT EXISTS bookings
+(
+    bookingID INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    start_date TIMESTAMP,
+    finish_date TIMESTAMP,
+    is_active BOOLEAN,
+    parkingFID INT,
+    auto_ownerFID INT
+);
+
 select * from bookings;
 
 -- Изучение индексов
@@ -43,3 +54,22 @@ SELECT bookingid FROM bookings b ;
 DELETE FROM bookings WHERE bookingid > 45000;
 TRUNCATE TABLE bookings RESTART IDENTITY;
 
+
+----------- Партиции
+DROP TABLE bookings ;
+CREATE TABLE IF NOT EXISTS bookings
+(
+    bookingID INT GENERATED ALWAYS AS IDENTITY,
+    start_date TIMESTAMP,
+    finish_date TIMESTAMP,
+    is_active BOOLEAN,
+    parkingFID INT,
+    auto_ownerFID INT,
+    PRIMARY KEY(bookingID, is_active)
+)PARTITION BY LIST (is_active);
+
+CREATE TABLE bookings_active PARTITION OF bookings
+    FOR VALUES IN (TRUE);
+
+CREATE TABLE bookings_inactive PARTITION OF bookings
+    FOR VALUES IN (FALSE);
