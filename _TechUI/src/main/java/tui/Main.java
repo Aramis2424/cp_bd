@@ -16,6 +16,7 @@ public class Main {
 
         InitCheckers.stop();
         util.HibernateUtil.close();
+
         logger.debug("Program finish");
     }
 }
